@@ -32,11 +32,11 @@ type FileInfo struct {
 
 type FileMap map[string]FileInfo
 
-func (f FileInfo) string(path *string) string {
+func (f FileInfo) string(path string) string {
 	if f.Target == "" {
-		return fmt.Sprintf("%s %s %s %s\n", *path, f.Perms.Owner, f.Perms.Group, f.Perms.Perms)
+		return fmt.Sprintf("%s %s %s %s\n", path, f.Perms.Owner, f.Perms.Group, f.Perms.Perms)
 	}
-	return fmt.Sprintf("%s %s %s %s %s\n", *path, f.Perms.Owner, f.Perms.Group, f.Perms.Perms, f.Target)
+	return fmt.Sprintf("%s %s %s %s %s\n", path, f.Perms.Owner, f.Perms.Group, f.Perms.Perms, f.Target)
 }
 
 func (f FileMap) FindByType(root, fileType string) []FileInfo {
@@ -54,7 +54,7 @@ func (f FileMap) String() string {
 	var str strings.Builder
 
 	for path, info := range f {
-		str.WriteString(info.string(&path))
+		str.WriteString(info.string(path))
 	}
 	return str.String()
 }
