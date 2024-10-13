@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"io"
 	"os"
 	"strings"
@@ -80,12 +81,15 @@ func saveConfig(path string, config common.FileMap) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+
+	defer func(f *os.File) {
+		err = errors.Join(err, f.Close())
+	}(f)
 
 	_, err = f.WriteString(config.String())
 	if err != nil {
 		return err
 	}
 
-	return nil
+	return err
 }
