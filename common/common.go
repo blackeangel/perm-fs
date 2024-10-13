@@ -39,7 +39,7 @@ func (f FileInfo) string(path *string) string {
 	return fmt.Sprintf("%s %s %s %s %s\n", *path, f.Perms.Owner, f.Perms.Group, f.Perms.Perms, f.Target)
 }
 
-func (f FileMap) FindBytype(root, ftype string) []FileInfo {
+func (f FileMap) FindByType(root, ftype string) []FileInfo {
 	files := make([]FileInfo, 0, TmpCapacity)
 
 	for path, finfo := range f {

@@ -150,7 +150,7 @@ func newDefaultPermsMap(targetDir string, fsConfig io.Reader) (defaultPermsMap, 
 				break
 			}
 
-			foundFiles = customConfig.FindBytype(fileSearchPath, common.File)
+			foundFiles = customConfig.FindByType(fileSearchPath, common.File)
 			fileSearchPath = filepath.Dir(fileSearchPath)
 		}
 
@@ -160,7 +160,7 @@ func newDefaultPermsMap(targetDir string, fsConfig io.Reader) (defaultPermsMap, 
 				break
 			}
 
-			foundDirs = customConfig.FindBytype(dirSearchPath, common.Dir)
+			foundDirs = customConfig.FindByType(dirSearchPath, common.Dir)
 			dirSearchPath = filepath.Dir(dirSearchPath)
 		}
 
