@@ -39,12 +39,12 @@ func (f FileInfo) string(path *string) string {
 	return fmt.Sprintf("%s %s %s %s %s\n", *path, f.Perms.Owner, f.Perms.Group, f.Perms.Perms, f.Target)
 }
 
-func (f FileMap) FindByType(root, ftype string) []FileInfo {
+func (f FileMap) FindByType(root, fileType string) []FileInfo {
 	files := make([]FileInfo, 0, TmpCapacity)
 
-	for path, finfo := range f {
-		if strings.HasPrefix(path, root) && path != root && finfo.Type == ftype {
-			files = append(files, finfo)
+	for path, info := range f {
+		if strings.HasPrefix(path, root) && path != root && info.Type == fileType {
+			files = append(files, info)
 		}
 	}
 	return files

@@ -24,13 +24,13 @@ type defaultPerms struct {
 
 type defaultPermsMap map[string]defaultPerms
 
-func getFrequentPerms(files common.FileMap, ftype string) common.FilePerms {
+func getFrequentPerms(files common.FileMap, fileType string) common.FilePerms {
 	if cachedFileFrequentPerms == (common.FilePerms{}) {
 		fileBuff := make([]common.FilePerms, 0, len(files))
 
-		for _, finfo := range files {
-			if finfo.Type == common.File {
-				fileBuff = append(fileBuff, finfo.Perms)
+		for _, info := range files {
+			if info.Type == common.File {
+				fileBuff = append(fileBuff, info.Perms)
 			}
 		}
 
@@ -43,9 +43,9 @@ func getFrequentPerms(files common.FileMap, ftype string) common.FilePerms {
 	if cachedDirFrequentPerms == (common.FilePerms{}) {
 		dirBuff := make([]common.FilePerms, 0, common.TmpCapacity)
 
-		for _, finfo := range files {
-			if finfo.Type == common.Dir {
-				dirBuff = append(dirBuff, finfo.Perms)
+		for _, info := range files {
+			if info.Type == common.Dir {
+				dirBuff = append(dirBuff, info.Perms)
 			}
 		}
 
@@ -55,14 +55,14 @@ func getFrequentPerms(files common.FileMap, ftype string) common.FilePerms {
 		}
 	}
 
-	if ftype == common.File {
+	if fileType == common.File {
 		return cachedFileFrequentPerms
 	}
-	if ftype == common.Dir {
+	if fileType == common.Dir {
 		return cachedDirFrequentPerms
 	}
 
-	panic(fmt.Sprintf("unknown file type: %s. Unable to determine default permissions", ftype))
+	panic(fmt.Sprintf("unknown file type: %s. Unable to determine default permissions", fileType))
 }
 
 func newCustomFsConfig(target string, fsConfig io.Reader) (common.FileMap, error) {
@@ -85,26 +85,26 @@ func newCustomFsConfig(target string, fsConfig io.Reader) (common.FileMap, error
 
 		path := filepath.Join(targetDir, fields[0])
 
-		ftype, err := common.GetFileType(path)
+		fileType, err := common.GetFileType(path)
 		if os.IsNotExist(err) {
 			continue
 		} else if err != nil {
 			return nil, err
 		}
 
-		if ftype == common.Link {
+		if fileType == common.Link {
 			continue
 		}
 
-		finfo := common.FileInfo{
-			Type: ftype,
+		info := common.FileInfo{
+			Type: fileType,
 			Perms: common.FilePerms{
 				Owner: fields[1],
 				Group: fields[2],
 				Perms: fields[3],
 			},
 		}
-		customFsConfig[common.RootToBase(path, target)] = finfo
+		customFsConfig[common.RootToBase(path, target)] = info
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, err
@@ -121,9 +121,9 @@ func newDefaultPermsMap(targetDir string, fsConfig io.Reader) (defaultPermsMap, 
 
 	fsDirs := make(common.FileMap, common.TmpCapacity)
 
-	for path, finfo := range customConfig {
-		if finfo.Type == common.Dir {
-			fsDirs[path] = finfo
+	for path, info := range customConfig {
+		if info.Type == common.Dir {
+			fsDirs[path] = info
 		}
 	}
 

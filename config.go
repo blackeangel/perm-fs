@@ -21,7 +21,7 @@ func loadConfig(config io.Reader) (common.FileMap, error) {
 
 		if len(fields) == 5 {
 			// if there are 5 fields, it's a symbolic link
-			finfo := common.FileInfo{
+			info := common.FileInfo{
 				Target: fields[4],
 				Perms: common.FilePerms{
 					Group: fields[2],
@@ -30,11 +30,11 @@ func loadConfig(config io.Reader) (common.FileMap, error) {
 				},
 			}
 
-			fileMap[fields[0]] = finfo
+			fileMap[fields[0]] = info
 			continue
 		}
 
-		finfo := common.FileInfo{
+		info := common.FileInfo{
 			Perms: common.FilePerms{
 				Group: fields[2],
 				Owner: fields[1],
@@ -42,7 +42,7 @@ func loadConfig(config io.Reader) (common.FileMap, error) {
 			},
 		}
 
-		fileMap[fields[0]] = finfo
+		fileMap[fields[0]] = info
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, err
