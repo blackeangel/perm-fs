@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"io"
 	"os"
 	"strings"
@@ -21,7 +22,7 @@ func loadConfig(config io.Reader) (common.FileMap, error) {
 
 		if len(fields) == 5 {
 			// if there are 5 fields, it's a symbolic link
-			finfo := common.FileInfo{
+			info := common.FileInfo{
 				Target: fields[4],
 				Perms: common.FilePerms{
 					Group: fields[2],
@@ -30,11 +31,11 @@ func loadConfig(config io.Reader) (common.FileMap, error) {
 				},
 			}
 
-			fileMap[fields[0]] = finfo
+			fileMap[fields[0]] = info
 			continue
 		}
 
-		finfo := common.FileInfo{
+		info := common.FileInfo{
 			Perms: common.FilePerms{
 				Group: fields[2],
 				Owner: fields[1],
@@ -42,7 +43,7 @@ func loadConfig(config io.Reader) (common.FileMap, error) {
 			},
 		}
 
-		fileMap[fields[0]] = finfo
+		fileMap[fields[0]] = info
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, err
@@ -80,12 +81,15 @@ func saveConfig(path string, config common.FileMap) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+
+	defer func(f *os.File) {
+		err = errors.Join(err, f.Close())
+	}(f)
 
 	_, err = f.WriteString(config.String())
 	if err != nil {
 		return err
 	}
 
-	return nil
+	return err
 }

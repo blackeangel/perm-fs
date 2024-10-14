@@ -31,7 +31,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	defaultPermsMap, err := newDefaultPermsMap(targetDirPath, fsConfigReader)
+	permsMap, err := newDefaultPermsMap(targetDirPath, fsConfigReader)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -46,7 +46,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	currentFileMap, err := loadFiles(targetDirPath, defaultPermsMap)
+	currentFileMap, err := loadFiles(targetDirPath, permsMap)
 	if err != nil {
 		log.Fatalln(err)
 	}
